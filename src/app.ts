@@ -22,6 +22,16 @@ app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Hello World with TypeScript and PostgreSQL!' });
 });
 
+// Healthcheck route
+app.get('/healthcheck', async (req: Request, res: Response) => {
+  try {
+    await sequelize.authenticate();
+    res.status(200).json({ status: 'ok', database: 'connected' });
+  } catch (error) {
+    res.status(500).json({ status: 'error', database: 'disconnected' });
+  }
+});
+
 // API Routes
 app.use('/api/users', userRoutes);
 
