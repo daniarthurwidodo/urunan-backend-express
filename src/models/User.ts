@@ -1,44 +1,44 @@
-import {
-    Table,
-    Column,
-    Model,
-    DataType,
-    CreatedAt,
-    UpdatedAt,
-    PrimaryKey,
-    AutoIncrement,
-    AllowNull,
-    Unique,
-  } from 'sequelize-typescript';
-  
-  @Table({
+import { Model, DataTypes } from 'sequelize';
+import sequelize from '../config/database';
+
+export class User extends Model {
+  public id!: number;
+  public name!: string;
+  public email!: string;
+  public phone?: string;
+  public password!: string; // Add this line
+}
+
+User.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    phone: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false, // Add this block
+    },
+  },
+  {
+    sequelize,
+    modelName: 'User',
     tableName: 'users',
-    timestamps: true,
-  })
-  export class User extends Model {
-    @PrimaryKey
-    @AutoIncrement
-    @Column(DataType.INTEGER)
-    id!: number;
-  
-    @AllowNull(false)
-    @Column(DataType.STRING)
-    name!: string;
-  
-    @AllowNull(false)
-    @Unique
-    @Column(DataType.STRING)
-    email!: string;
-  
-    @Column(DataType.STRING)
-    phone?: string;
-  
-    @CreatedAt
-    @Column(DataType.DATE)
-    createdAt!: Date;
-  
-    @UpdatedAt
-    @Column(DataType.DATE)
-    updatedAt!: Date;
-      password: string | undefined;
   }
+);
+
+export default User;
