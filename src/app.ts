@@ -2,6 +2,10 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import sequelize from './config/database';
+import userRoutes from './routes/userRoutes';
+
+import 'dotenv/config';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -15,16 +19,11 @@ app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 
 // Routes
 app.get('/', (req: Request, res: Response) => {
-  res.json({ message: 'Hello World with TypeScript!' });
+  res.json({ message: 'Hello World with TypeScript and PostgreSQL!' });
 });
 
-app.get('/api/users', (req: Request, res: Response) => {
-  const users = [
-    { id: 1, name: 'John Doe', email: 'john@example.com' },
-    { id: 2, name: 'Jane Smith', email: 'jane@example.com' }
-  ];
-  res.json(users);
-});
+// API Routes
+app.use('/api/users', userRoutes);
 
 // Error handling middleware
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
@@ -37,8 +36,25 @@ app.use((req: Request, res: Response) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+// Database connection and server start
+const startServer = async () => {
+  try {
+    await sequelize.authenticate();
+    console.log('Database connected successfully');
+    
+    // Sync database (creates tables if they don't exist)
+    await sequelize.sync({ force: false }); // Set force: true to drop and recreate tables
+    console.log('Database synced');
+    
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error('Unable to connect to database:', error);
+    process.exit(1);
+  }
+};
+
+startServer();
 
 export default app;

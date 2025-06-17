@@ -7,7 +7,12 @@
     "dev": "nodemon src/app.ts",
     "build": "tsc",
     "start": "node dist/app.js",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "docker:dev": "docker-compose up postgres pgadmin",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "docker:clean": "docker-compose down -v --rmi all"
   },
   "keywords": [],
   "author": "",
@@ -15,15 +20,17 @@
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
-    "express": "^5.1.0",
+    "express": "^4.21.2",
     "helmet": "^8.1.0",
     "morgan": "^1.10.0",
     "pg": "^8.16.0",
+    "reflect-metadata": "^0.2.2",
     "sequelize": "^6.37.7"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.3",
+    "@types/dotenv": "^8.2.3",
+    "@types/express": "^4.17.23",
     "@types/helmet": "^4.0.0",
     "@types/morgan": "^1.9.10",
     "@types/node": "^24.0.3",
