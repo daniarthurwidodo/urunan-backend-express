@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import passport from '../config/passport';
 import { User } from '../models/User';
+import bcrypt from 'bcrypt';
 
 const router = Router();
 
@@ -11,8 +12,8 @@ router.post('/register', async (req: Request, res: Response) => {
     return res.status(400).json({ error: 'Name, email, and password are required' });
   }
   try {
-    // TODO: Hash password before saving in production!
-    const user = await User.create({ name, email, password, phone });
+    const hashedPassword = await bcrypt.hash(password, 10); // 10 salt rounds
+    const user = await User.create({ name, email, password: hashedPassword, phone });
     res.status(201).json({ message: 'User registered', user: { id: user.id, name: user.name, email: user.email } });
   } catch (error: any) {
     if (error.name === 'SequelizeUniqueConstraintError') {
