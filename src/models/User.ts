@@ -40,4 +40,5 @@ import {
     @UpdatedAt
     @Column(DataType.DATE)
     updatedAt!: Date;
+      password: string | undefined;
   }
